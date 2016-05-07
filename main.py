@@ -32,7 +32,21 @@ def roll100():
 
 def quitDun():
 
-    sys.exit("Thanks for playing")
+    sys.exit("\nThanks for playing")
+
+def enterTo():
+
+    global level
+
+    option = raw_input("\nPress enter to continue ")
+
+    if option.lower() == "l" or option.lower() == "leave":
+
+        print "You got to level {}".format(level)
+
+        quitDun()
+
+    print "\n"
 
 def rollStairs():
 
@@ -144,15 +158,19 @@ def rollTreasure(M=False):
         rollT(roll100())
 
 
-def rollMonster():
+def rollMonster(roll=None):
+
+    global level
 
     with con:
 
         c = con.cursor()
 
-        roll = str(roll100())
+        if roll == None:
+
+            roll = str(roll100())
         
-        c.execute('SELECT * FROM monsters WHERE Roll=?', (roll,))
+        c.execute('SELECT * FROM monsters WHERE Roll=? AND Level=?', (roll,level,))
 
         monster = c.fetchone()
 
@@ -168,6 +186,8 @@ def rollMonster():
     # 7 = Size
     # 8 = Check
     # 9 = Page
+
+    print roll
 
     print "=====\t\t"+monster[2]+"\t\t====="
 
@@ -205,9 +225,9 @@ def rollMonster():
 
         elif "~" in HP:
 
-			HPS.append(randint(HP.split("~")[0],HP.split("~")[1]))
+            HPS.append(randint(int(HP.split("~")[0]),int(HP.split("~")[1])))
 
-		else:
+        else:
 
             HPS.append(roll8()*int(HP))
 
@@ -250,7 +270,7 @@ def rollRoom():
 
     if content == "Empty":
 
-        print "Room is empty!"
+        print "Room is empty!\n"
 
     elif content == "Monster":
 
@@ -258,7 +278,7 @@ def rollRoom():
 
         rollMonster()
 
-        raw_input("\nPress enter to continue")
+        enterTo()
 
     elif content == "Monster/Treasure":
 
@@ -266,11 +286,11 @@ def rollRoom():
 
         rollMonster()
 
-        raw_input("\nPress enter to continue\n")
+        enterTo()
 
         rollTreasure(True)
 
-        raw_input("\nPress enter to continue")
+        enterTo()
 
     elif content == "Stairs":
 
@@ -282,9 +302,9 @@ def rollRoom():
 
         print "ITS A TARP\n"
 
-        print "Roll a trap yourself"
+        print "Roll a trap yourself\nPress enter when done\n"
 
-        raw_input("\nPress enter to continue")
+        enterTo()
 
     elif content == "Treasure":
 
@@ -292,7 +312,7 @@ def rollRoom():
 
         rollTreasure()
 
-        raw_input("\nPress enter to continue")
+        enterTo()
 
 while True:
 
